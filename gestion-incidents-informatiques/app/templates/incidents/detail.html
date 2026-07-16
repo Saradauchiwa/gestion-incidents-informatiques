@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>{{ incident.reference }} - {{ incident.titre }}</h1>
+
+<div class="form-card" style="max-width:none;">
+    <p><strong>Statut :</strong> {{ incident.statut_nom }}</p>
+    <p><strong>Priorite :</strong> {{ incident.priorite_nom }}</p>
+    <p><strong>Categorie :</strong> {{ incident.categorie_nom }}</p>
+    <p><strong>Declare par :</strong> {{ incident.declarant_prenom }} {{ incident.declarant_nom }}</p>
+    <p><strong>Ouvert le :</strong> {{ incident.date_ouverture }}</p>
+    {% if incident.date_cloture %}
+    <p><strong>Cloture le :</strong> {{ incident.date_cloture }}</p>
+    {% endif %}
+    <p><strong>Description :</strong><br>{{ incident.description }}</p>
+</div>
+
+{% if statuts %}
+<h2>Actions technicien / admin</h2>
+
+<form method="POST" action="{{ url_for('incidents.affecter', id_incident=incident.id_incident) }}" class="form-card">
+    <label for="id_technicien">Affecter a un technicien</label>
+    <select id="id_technicien" name="id_technicien" required>
+        {% for t in techniciens %}
+        <option value="{{ t.id_utilisateur }}">{{ t.prenom }} {{ t.nom }}</option>
+        {% endfor %}
+    </select>
+    <label for="commentaire">Commentaire d'affectation</label>
+    <input type="text" id="commentaire" name="commentaire">
+    <button type="submit">Affecter</button>
+</form>
+
+<form method="POST" action="{{ url_for('incidents.changer_statut', id_incident=incident.id_incident) }}" class="form-card">
+    <label for="id_statut">Changer le statut</label>
+    <select id="id_statut" name="id_statut" required>
+        {% for s in statuts %}
+        <option value="{{ s.id_statut }}">{{ s.nom }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">Mettre a jour le statut</button>
+</form>
+
+<form method="POST" action="{{ url_for('incidents.intervenir', id_incident=incident.id_incident) }}" class="form-card">
+    <label for="description">Nouvelle intervention</label>
+    <textarea id="description" name="description" rows="3" required></textarea>
+    <label for="duree_minutes">Duree (minutes)</label>
+    <input type="number" id="duree_minutes" name="duree_minutes" min="0" required>
+    <label for="id_statut2">Statut apres intervention</label>
+    <select id="id_statut2" name="id_statut" required>
+        {% for s in statuts %}
+        <option value="{{ s.id_statut }}">{{ s.nom }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">Enregistrer l'intervention</button>
+</form>
+
+<form method="POST" action="{{ url_for('incidents.cloturer', id_incident=incident.id_incident) }}">
+    <button type="submit" class="btn">Cloturer l'incident</button>
+</form>
+{% endif %}
+
+<h2>Commentaires</h2>
+<table>
+    <tr><th>Auteur</th><th>Date</th><th>Contenu</th></tr>
+    {% for c in commentaires %}
+    <tr>
+        <td>{{ c.prenom }} {{ c.nom }}</td>
+        <td>{{ c.date_creation }}</td>
+        <td>{{ c.contenu }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="3">Aucun commentaire.</td></tr>
+    {% endfor %}
+</table>
+
+<form method="POST" action="{{ url_for('incidents.commenter', id_incident=incident.id_incident) }}" class="form-card">
+    <label for="contenu">Ajouter un commentaire</label>
+    <textarea id="contenu" name="contenu" rows="2" required></textarea>
+    <button type="submit">Envoyer</button>
+</form>
+
+<h2>Interventions</h2>
+<table>
+    <tr><th>Date</th><th>Duree (min)</th><th>Description</th></tr>
+    {% for it in interventions %}
+    <tr>
+        <td>{{ it.date_intervention }}</td>
+        <td>{{ it.duree_minutes }}</td>
+        <td>{{ it.description }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="3">Aucune intervention.</td></tr>
+    {% endfor %}
+</table>
+
+<h2>Affectations</h2>
+<table>
+    <tr><th>Technicien</th><th>Date</th><th>Actif</th><th>Commentaire</th></tr>
+    {% for a in affectations %}
+    <tr>
+        <td>{{ a.prenom }} {{ a.nom }}</td>
+        <td>{{ a.date_affectation }}</td>
+        <td>{{ "Oui" if a.actif else "Non" }}</td>
+        <td>{{ a.commentaire }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="4">Aucune affectation.</td></tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Liste des incidents</h1>
+
+<table>
+    <tr>
+        <th>Reference</th>
+        <th>Titre</th>
+        <th>Statut</th>
+        <th>Priorite</th>
+        <th>Date ouverture</th>
+        <th></th>
+    </tr>
+    {% for i in incidents %}
+    <tr>
+        <td>{{ i.reference }}</td>
+        <td>{{ i.titre }}</td>
+        <td>{{ i.statut }}</td>
+        <td>{{ i.priorite }}</td>
+        <td>{{ i.date_ouverture }}</td>
+        <td><a class="btn" href="{{ url_for('incidents.detail_incident', id_incident=i.id_incident) }}">Voir</a></td>
+    </tr>
+    {% else %}
+    <tr><td colspan="6">Aucun incident pour le moment.</td></tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

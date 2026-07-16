@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Nouvel incident</h1>
+
+<form method="POST" class="form-card">
+    <label for="reference">Reference</label>
+    <input type="text" id="reference" name="reference" placeholder="INC-2026-001" required>
+
+    <label for="titre">Titre</label>
+    <input type="text" id="titre" name="titre" required>
+
+    <label for="description">Description</label>
+    <textarea id="description" name="description" rows="4" required></textarea>
+
+    <label for="id_priorite">Priorite</label>
+    <select id="id_priorite" name="id_priorite" required>
+        {% for p in priorites %}
+        <option value="{{ p.id_priorite }}">{{ p.nom }}</option>
+        {% endfor %}
+    </select>
+
+    <label for="id_categorie">Categorie</label>
+    <select id="id_categorie" name="id_categorie" required>
+        {% for c in categories %}
+        <option value="{{ c.id_categorie }}">{{ c.nom }}</option>
+        {% endfor %}
+    </select>
+
+    <button type="submit">Creer l'incident</button>
+</form>
+
+{% endblock %}

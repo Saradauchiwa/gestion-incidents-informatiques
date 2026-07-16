@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestion des Incidents Informatiques</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <nav class="navbar">
+        <span class="logo">Gestion Incidents</span>
+
+        {% if current_user_nom %}
+            <a href="{{ url_for('incidents.dashboard') }}">Tableau de bord</a>
+            <a href="{{ url_for('incidents.liste_incidents') }}">Incidents</a>
+            {% if current_user_role in ['ADMIN', 'UTILISATEUR'] %}
+                <a href="{{ url_for('incidents.creer_incident') }}">Nouvel incident</a>
+            {% endif %}
+            {% if current_user_role == 'ADMIN' %}
+                <a href="{{ url_for('incidents.journal_audit') }}">Journal d'audit</a>
+                <a href="{{ url_for('admin.liste_utilisateurs') }}">Utilisateurs</a>
+            {% endif %}
+            <span class="nav-user">{{ current_user_nom }} ({{ current_user_role }})</span>
+            <a href="{{ url_for('auth.logout') }}">Deconnexion</a>
+        {% endif %}
+    </nav>
+
+    <main class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash flash-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+</body>
+</html>

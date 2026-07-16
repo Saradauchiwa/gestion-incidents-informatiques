@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>{{ "Modifier" if utilisateur else "Nouvel" }} utilisateur</h1>
+
+<form method="POST" class="form-card">
+    <label for="nom">Nom</label>
+    <input type="text" id="nom" name="nom" value="{{ utilisateur.nom if utilisateur else '' }}" required>
+
+    <label for="prenom">Prenom</label>
+    <input type="text" id="prenom" name="prenom" value="{{ utilisateur.prenom if utilisateur else '' }}">
+
+    <label for="email">Email</label>
+    <input type="email" id="email" name="email" value="{{ utilisateur.email if utilisateur else '' }}" required>
+
+    <label for="role">Role</label>
+    <select id="role" name="role" required>
+        {% for r in ["ADMIN", "TECHNICIEN", "UTILISATEUR"] %}
+        <option value="{{ r }}" {% if utilisateur and utilisateur.role == r %}selected{% endif %}>{{ r }}</option>
+        {% endfor %}
+    </select>
+
+    <label for="service">Service</label>
+    <input type="text" id="service" name="service" value="{{ utilisateur.service if utilisateur else '' }}">
+
+    <label for="mot_de_passe">
+        {{ "Nouveau mot de passe (laisser vide pour ne pas changer)" if utilisateur else "Mot de passe" }}
+    </label>
+    <input type="password" id="mot_de_passe" name="mot_de_passe" {{ "required" if not utilisateur else "" }}>
+
+    <button type="submit">Enregistrer</button>
+</form>
+
+{% endblock %}

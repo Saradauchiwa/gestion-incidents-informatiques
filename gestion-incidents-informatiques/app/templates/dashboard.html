@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Tableau de bord</h1>
+
+<h2>Statistiques par statut</h2>
+<table>
+    <tr>
+        <th>Statut</th>
+        <th>Nombre d'incidents</th>
+    </tr>
+    {% for s in stats %}
+    <tr>
+        <td>{{ s.statut }}</td>
+        <td>{{ s.nombre_incidents }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h2>Derniers incidents ouverts</h2>
+<table>
+    <tr>
+        <th>Reference</th>
+        <th>Titre</th>
+        <th>Priorite</th>
+        <th>Date ouverture</th>
+    </tr>
+    {% for i in derniers_ouverts %}
+    <tr>
+        <td>{{ i.reference }}</td>
+        <td>{{ i.titre }}</td>
+        <td>{{ i.priorite }}</td>
+        <td>{{ i.date_ouverture }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

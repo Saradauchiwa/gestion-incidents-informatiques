@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Journal d'audit</h1>
+<p>Les 200 dernieres operations tracees automatiquement par le trigger <code>trg_audit_incident</code>.</p>
+
+<table>
+    <tr>
+        <th>Date</th>
+        <th>Operation</th>
+        <th>Table</th>
+        <th>Utilisateur PostgreSQL</th>
+        <th>Detail</th>
+    </tr>
+    {% for e in entrees %}
+    <tr>
+        <td>{{ e.date_action }}</td>
+        <td>{{ e.operation }}</td>
+        <td>{{ e.table_nom }}</td>
+        <td>{{ e.utilisateur }}</td>
+        <td style="max-width:400px; overflow-wrap:anywhere;">
+            {% if e.nouvelle_valeur %}<div><strong>Nouvelle :</strong> {{ e.nouvelle_valeur }}</div>{% endif %}
+            {% if e.ancienne_valeur %}<div><strong>Ancienne :</strong> {{ e.ancienne_valeur }}</div>{% endif %}
+        </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="5">Aucune entree d'audit.</td></tr>
+    {% endfor %}
+</table>
+
+{% endblock %}
