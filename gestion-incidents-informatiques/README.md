@@ -125,6 +125,48 @@ python run.py
 
 L'application est ensuite accessible sur `http://127.0.0.1:5000`.
 
+## Déploiement avec Docker
+
+Le projet peut être lancé entièrement avec Docker, sans installer Python ni PostgreSQL sur la machine.
+
+### Prérequis
+
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) installé et lancé
+
+### Lancement
+
+```bash
+# 1. Copier le fichier d'environnement
+cp .env.example .env
+# puis éditer .env : renseigner DB_PASSWORD, POSTGRES_PASSWORD et FLASK_SECRET_KEY
+
+# 2. Construire les images et démarrer les conteneurs
+docker compose up --build
+```
+
+Au premier démarrage, PostgreSQL importe automatiquement `sql/script_examen_BDD.sql` (schéma + données de test) puis `sql/roles_privileges.sql` (rôles et privilèges) — aucune commande manuelle n'est nécessaire.
+
+L'application est ensuite accessible sur `http://localhost:5000`.
+
+### Commandes utiles
+
+```bash
+# Lancer en arrière-plan
+docker compose up -d
+
+# Voir les logs de l'application
+docker compose logs -f web
+
+# Arrêter les conteneurs (les données PostgreSQL sont conservées)
+docker compose down
+
+# Arrêter et supprimer aussi les données PostgreSQL (repart de zéro)
+docker compose down -v
+
+# Se connecter à la base depuis le conteneur PostgreSQL
+docker compose exec db psql -U postgres -d gestion_des_incidents_informatiques
+```
+
 ## Variables d'environnement
 
 Voir `.env.example` pour le modèle complet.

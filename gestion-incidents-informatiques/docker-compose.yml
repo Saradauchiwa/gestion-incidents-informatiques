@@ -1,0 +1,40 @@
+services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: gestion_des_incidents_informatiques
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      # Scripts exécutés automatiquement, dans l'ordre, à la toute première
+      # création du volume (schéma d'abord, rôles/privilèges ensuite)
+      - ./sql/script_examen_BDD.sql:/docker-entrypoint-initdb.d/01_schema.sql
+      - ./sql/roles_privileges.sql:/docker-entrypoint-initdb.d/02_roles_privileges.sql
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  web:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: gestion_des_incidents_informatiques
+      DB_USER: app_login
+      DB_PASSWORD: ${DB_PASSWORD:-app_login}
+      FLASK_SECRET_KEY: ${FLASK_SECRET_KEY:-change_moi_par_une_valeur_aleatoire_longue}
+    ports:
+      - "5000:5000"
+
+volumes:
+  postgres_data:
